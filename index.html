@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="purple" style="--fz: 24px; --ui-scale: 1;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#7C3AED">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>الذكي - دفتر التحضير الذكي</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+
+<style>
+body{font-size:14px;}
+.math-frac-wrapper { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: -6px 5px; direction: rtl; unicode-bidi: isolate; font-size: 0.85em; }
+.math-frac-num { position: relative; top: 1px; padding: 0 3px; line-height: 0.85; }
+.math-frac-den { border-top: 1.5px solid var(--primary, #7C3AED); margin-top: 2px; padding: 0 3px; line-height: 0.85; }
+.math-root-wrapper { display: inline-flex; direction: rtl; align-items: stretch; vertical-align: middle; margin: 0 6px 0 9px; unicode-bidi: isolate; }
+.math-root-tick { flex-shrink: 0; align-self: stretch; aspect-ratio: 2 / 3; min-width: 11px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 30'%3E%3Cpath d='M1 0 L13 28 L18 19' stroke='%23000' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E"); background-size: 100% 100%; background-repeat: no-repeat; }
+.math-root-body { border-top: 1.6px solid #7C3AED; margin-top: 1.5px; padding: 2px 4px 0 4px; line-height: 1.2; }
+.math-power-wrapper { display: inline-flex; align-items: baseline; direction: rtl; margin: 0 4px; unicode-bidi: isolate; }
+.math-power-base { font-size: 1.1em; min-width: 15px; padding: 0 1px; }
+.math-power-sup { font-size: 0.8em; transform: translateY(-0.6em); min-width: 10px; margin-right: 1px; padding: 0 1px; white-space: nowrap; }
+#pastedText, #imagesExtractedText, #pdfExtractedText, #libExtractedText, #bankEditContent {
+    min-height: 350px !important; max-height: 65vh; resize: vertical !important;
+    font-size: 1.1rem !important; line-height: 1.9 !important; padding: 18px !important;
+    background-color: #F8FAFC !important; border: 2px solid #CBD5E1 !important;
+    border-radius: 12px !important; box-shadow: inset 0 2px 8px rgba(0,0,0,0.03) !important;
+}
+#pastedText:focus, #imagesExtractedText:focus, #pdfExtractedText:focus, #libExtractedText:focus, #bankEditContent:focus {
+    border-color: #7C3AED !important; outline: none !important; background-color: #FFFFFF !important;
+}
+.appbar { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); border-bottom: 2px solid rgba(255, 255, 255, 0.2); }
+.appbar-3d-btn {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%) !important;
+    color: #4c1d95 !important; border: 1px solid #cbd5e1 !important;
+    border-bottom: 3px solid #94a3b8 !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    font-weight: 900 !important; transition: all 0.15s ease !important;
+}
+.appbar-3d-btn:active {
+    transform: translateY(2px); border-bottom-width: 1px !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+.appbar-3d-select {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    color: #334155 !important; border: 1px solid #cbd5e1 !important;
+    border-bottom: 3px solid #94a3b8 !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08) !important;
+    font-weight: bold !important; border-radius: 8px !important; padding: 4px 8px !important;
+}
+.appbar-3d-assistant {
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%) !important;
+    border: 1px solid #9333ea !important; border-bottom: 4px solid #3b0764 !important;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    transition: all 0.2s ease !important;
+}
+.appbar-3d-assistant:active { transform: translateY(2px); border-bottom-width: 2px !important; }
+.appbar-actions { gap: 6px !important; flex-wrap: nowrap !important; overflow-x: auto !important; max-width: 100%; padding-bottom: 4px; }
+.appbar-actions::-webkit-scrollbar { display: none; }
+#archiveKindSegment {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    background: transparent !important; border: none !important; padding: 0 !important; box-shadow: none !important;
+}
+#archiveKindSegment .seg-btn {
+    flex: 1 1 auto; border: 2px solid #fbcfe8 !important; background: #fdf2f8 !important;
+    color: #be185d !important; border-radius: 10px !important; padding: 10px 15px !important;
+    font-weight: 900 !important; font-size: 14px !important; transition: all 0.3s ease;
+}
+#archiveKindSegment .seg-btn:hover { background: #fce7f3 !important; }
+#archiveKindSegment .seg-btn.active {
+    background: #ec4899 !important; color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(236, 72, 153, 0.3) !important;
+    transform: translateY(-2px); border-color: #ec4899 !important;
+}
+.archive-item {
+    background: #ffffff !important; border: 2px solid #4c1d95 !important;
+    border-right: 6px solid #3b1e63 !important; border-radius: 12px !important;
+    padding: 16px !important; margin-bottom: 12px !important;
+    box-shadow: 0 3px 8px rgba(76, 29, 149, 0.1) !important; transition: all 0.2s ease-in-out !important;
+}
+.archive-item:hover {
+    border-color: #7c3aed !important; transform: translateY(-3px) !important;
+    box-shadow: 0 6px 15px rgba(124, 58, 237, 0.2) !important; background: #faf5ff !important;
+}
+.archive-item-main strong {
+    color: #1e293b !important; font-size: 16px !important; font-weight: 900 !important;
+    display: block !important; margin-bottom: 6px !important;
+}
+.archive-item-main span { color: #64748b !important; font-size: 12.5px !important; font-weight: bold !important; }
+.archive-item-badge {
+    background: #f3e8ff !important; color: #4c1d95 !important;
+    border: 1px solid #c4b5fd !important; padding: 6px 12px !important;
+    border-radius: 8px !important; font-weight: 900 !important; font-size: 13px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ APP BAR ═══════════════ -->
+<header class="appbar" id="appbar">
+  <div class="appbar-row">
+    <button class="appbar-btn appbar-btn-back" id="btnBack" hidden>
+      <svg viewBox="0 0 24 24" width="20" height="20"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>رجوع</span>
+    </button>
+    <span class="appbar-title" id="appbarTitle">✨ الذكي ✨</span>
+    <div class="appbar-actions">
+      <button class="appbar-btn appbar-3d-btn" id="btnGlobalSearch" title="بحث شامل" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2px 10px !important; height: 38px !important; min-height: 38px !important; border-radius: 8px; border: 2px solid #7C3AED !important; border-bottom: 4px solid #4C1D95 !important; background: #ffffff !important; box-shadow: 0 4px 6px rgba(124, 58, 237, 0.2) !important;">
+        <span style="font-size: 1rem; line-height: 1;">🔍</span>
+        <span style="font-size: 0.65rem; font-weight: 900; white-space: nowrap; color: #DC2626; margin-top: 1px;">ابحث في التطبيق</span>
+      </button>
+      <button class="appbar-btn appbar-btn-icon appbar-3d-btn" id="btnFontMinus" title="تصغير الخط">A-</button>
+      <button class="appbar-btn appbar-btn-icon appbar-3d-btn" id="btnFontPlus" title="تكبير الخط">A+</button>
+      <select class="appbar-select appbar-3d-select" id="fontFamilySelect" title="نوع الخط">
+        <option value="'CairoEB',sans-serif" selected>كايرو ⭐</option>
+        <option value="'AmiriBold',serif">أميري</option>
+        <option value="'Tajawal',sans-serif">تجوال</option>
+        <option value="'Traditional Arabic',serif">كلاسيكي</option>
+      </select>
+      <select class="appbar-select appbar-3d-select" id="themeSelect" title="السمة اللونية">
+        <option value="purple">🟣 بنفسجي</option>
+        <option value="navy">🔵 كحلي</option>
+        <option value="blue">💙 أزرق</option>
+        <option value="green">💚 أخضر</option>
+      </select>
+    </div>
+  </div>
+  <button class="appbar-assistant-bar appbar-3d-assistant" id="btnAssistant" type="button">
+    <span class="aab-icon">🤖</span>
+    <span class="aab-label">مساعدك الذكي</span>
+  </button>
+</header>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<section class="view" id="view-home" data-view="home">
+  <div class="home-hero">
+    <div class="seal-home">
+      <svg viewBox="0 0 64 64" width="80" height="80">
+        <circle cx="32" cy="32" r="30" fill="none" stroke="var(--primary)" stroke-width="2.5"/>
+        <circle cx="32" cy="32" r="20" fill="none" stroke="var(--accent)" stroke-width="1.4"/>
+        <polygon points="32,9 36,22 50,22 39,31 43,44 32,36 21,44 25,31 14,22 28,22" fill="var(--primary)"/>
+      </svg>
+    </div>
+    <h1 class="home-title">✨ الذكي ✨</h1>
+    <p class="home-sub">دفتر التحضير الذكي — الإصدار 5.0</p>
+  </div>
+  <div class="tiles">
+    <button class="tile" data-nav="settings"><span class="tile-icon">⚙️</span><span class="tile-title">الإعدادات</span><span class="tile-subtitle">تخصيص إعدادات التطبيق لاحتياجاتك</span></button>
+    <button class="tile" data-nav="help"><span class="tile-icon">📖</span><span class="tile-title">تعليمات</span><span class="tile-subtitle">دليل استخدام شامل لكافة الخدمات</span></button>
+    <button class="tile" data-nav="library"><span class="tile-icon">📚</span><span class="tile-title">المكتبة</span><span class="tile-subtitle">مكتبة الموارد التعليمية والكتب</span></button>
+    <button class="tile" data-nav="new"><span class="tile-icon">✏️</span><span class="tile-title">تحضير جديد</span><span class="tile-subtitle">إنشاء خطط وسبورات وغيرها</span></button>
+    <button class="tile" data-nav="archive"><span class="tile-icon">🗂️</span><span class="tile-title">الأرشيف</span><span class="tile-subtitle">حفظ وإدارة جميع الملفات المحفوظة</span></button>
+    <button class="tile" data-nav="bank"><span class="tile-icon">🗄️</span><span class="tile-title">دروس واختبارات</span><span class="tile-subtitle">الوصول السريع لدروسك المحفوظة وانشاء ملخصات واختبارات</span></button>
+    <button class="tile" onclick="window.location.href='grades.html'"><span class="tile-icon">📊</span><span class="tile-title">الدرجات والحضور</span><span class="tile-subtitle">إدارة سجلات درجات الطلاب والحضور</span></button>
+    <button class="tile" onclick="window.location.href='schedule.html'"><span class="tile-icon">📅</span><span class="tile-title">جدول الحصص</span><span class="tile-subtitle">جدول حصص تفاعلي</span></button>
+    <button class="tile" onclick="window.location.href='exams.html'"><span class="tile-icon">📝</span><span class="tile-title">مُحرّر اختبارات يدوياً</span><span class="tile-subtitle">تصميم الاختبارات وتنسيقها برغبتك</span></button>
+    <button class="tile" onclick="window.location.href='platform.html'"><span class="tile-icon">🌐</span><span class="tile-title">المنصة المدرسية</span><span class="tile-subtitle">بوابة ارسال ملفات واختبار طلابك بشبكة محلية</span></button>
+    <button class="tile" onclick="if(window.openSemesterPlanModal) window.openSemesterPlanModal(); else alert('جاري تحميل الميزة...');"><span class="tile-icon">🗓️</span><span class="tile-title">الخطة الفصلية</span><span class="tile-subtitle">خطة شاملة لجميع موادك وفصولك</span></button>
+    <button class="tile" onclick="window.location.href='oralexam.html'"><span class="tile-icon">🗣️</span><span class="tile-title">الاختبارات الشفوية</span><span class="tile-subtitle">قرعة عشوائية وتقييم مباشر للأداء</span></button>
+    <button class="tile" onclick="openSelfEvalModal()"><span class="tile-icon">📈</span><span class="tile-title">التقييم الذاتي</span><span class="tile-subtitle">قس أداءك وتعرف على أدواتك</span></button>
+    <button class="tile" onclick="window.location.href='exam_solver.html'"><span class="tile-icon">🧮</span><span class="tile-title">حل نماذج الاختبارات</span><span class="tile-subtitle">حل النماذج الوزارية مع خطوات الشرح التفصيلية</span></button>
+  </div>
+</section>
+
+<!-- ═══════════════ NEW LESSON ═══════════════ -->
+<section class="view" id="view-new" data-view="new" hidden>
+  <div class="scroll-area">
+    <div class="acc-wrap" id="newAccordion">
+      <div class="acc-item" data-acc="meta">
+        <button type="button" class="acc-head"><span class="acc-head-icon">📋</span><span class="acc-head-text">انقر هنا لإدخال بيانات الحصة</span><span class="acc-chevron">▾</span></button>
+        <div class="acc-panel" hidden>
+          <div class="grid-2">
+            <label class="field"><span>المدرسة</span><input id="fSchool" type="text" placeholder="اسم المدرسة"></label>
+            <label class="field"><span>المعلم</span><input id="fTeacher" type="text" placeholder="اسم المعلم"></label>
+            <label class="field"><span>المادة</span><input id="fSubject" type="text" placeholder="اللغة الإنجليزية"></label>
+            <label class="field"><span>الصف</span><input id="fGrade" type="text" placeholder="الثاني الثانوي"></label>
+            <label class="field"><span>الشعبة</span><input id="fSection" type="text" placeholder="أ"></label>
+            <label class="field"><span>التاريخ</span><input id="fDate" type="date"></label>
+            <label class="field"><span>الحصة</span><input id="fPeriod" type="text" placeholder="الأولى"></label>
+          </div>
+        </div>
+      </div>
+      <div class="acc-item" data-acc="resources">
+        <button type="button" class="acc-head"><span class="acc-head-icon">🎒</span><span class="acc-head-text">انقر هنا لاختيار الوسائل التعليمية</span><span class="acc-chevron">▾</span></button>
+        <div class="acc-panel" hidden>
+          <p class="hint">اختياري — تُبنى الخطة حسب الوسائل المحددة فقط.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;background:#f4f4f8;padding:8px 10px;border-radius:8px;"><input type="checkbox" class="resource-chk" value="كتاب المقرر">📘 كتاب</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;background:#f4f4f8;padding:8px 10px;border-radius:8px;"><input type="checkbox" class="resource-chk" value="سبورة">📝 سبورة</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;background:#f4f4f8;padding:8px 10px;border-radius:8px;"><input type="checkbox" class="resource-chk" value="شاشة عرض">🖥️ شاشة</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;background:#f4f4f8;padding:8px 10px;border-radius:8px;"><input type="checkbox" class="resource-chk" value="جهاز عرض (بروجكتر)">📽️ جهاز عرض</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;background:#f4f4f8;padding:8px 10px;border-radius:8px;"><input type="checkbox" class="resource-chk" value="هواتف الطلاب">📱 هواتف</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;background:#f4f4f8;padding:8px 10px;border-radius:8px;"><input type="checkbox" class="resource-chk" value="أجهزة آيباد/تابلت">📲 آيباد</label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:13px;background:#f4f4f8;padding:8px 10px;border-radius:8px;"><input type="checkbox" class="resource-chk" value="خرائط ووسائل عرض جدارية">🗺️ خرائط ووسائل عرض</label>
+          </div>
+        </div>
+      </div>
+      <div class="acc-item" data-acc="lang">
+        <button type="button" class="acc-head"><span class="acc-head-icon">🌐</span><span class="acc-head-text">انقر هنا لاختيار لغة الخطة</span><span class="acc-chevron">▾</span></button>
+        <div class="acc-panel" hidden>
+          <div class="segmented" id="langSegment">
+            <button class="seg-btn active" data-lang="ar">عربي 🇾🇪</button>
+            <button class="seg-btn" data-lang="en">English 🇬🇧</button>
+          </div>
+        </div>
+      </div>
+      <div class="acc-item" data-acc="source">
+        <button type="button" class="acc-head"><span class="acc-head-icon">📄</span><span class="acc-head-text">انقر هنا لاختيار مصدر المحتوى</span><span class="acc-chevron">▾</span></button>
+        <div class="acc-panel" hidden>
+          <label class="field"><span>عنوان الدرس *</span><input id="fTitle" type="text" placeholder="اكتب عنوان الدرس"></label>
+          <div class="segmented seg-scroll" id="sourceSegment" style="margin-top:12px;">
+            <button class="seg-btn active" data-source="title">عنوان فقط</button>
+            <button class="seg-btn" data-source="text">نص</button>
+            <button class="seg-btn" data-source="images">صور</button>
+            <button class="seg-btn" data-source="pdf">ملف (PDF/Word)</button>
+            <button class="seg-btn" data-source="library">المكتبة</button>
+          </div>
+          <div id="panel-title" class="src-panel"><p class="hint">💡 سيُنشئ الذكاء الاصطناعي الخطة الكاملة بناءً على عنوان الدرس والمادة والصف فقط.</p></div>
+          <div id="panel-text" class="src-panel" hidden><textarea id="pastedText" class="big-ta" placeholder="الصق أو اكتب محتوى الدرس هنا..."></textarea></div>
+          <div id="panel-images" class="src-panel" hidden>
+            <div class="btn-row-flex"><button class="btn-sec" id="btnPickImages">📷 اختر صورة أو أكثر</button><button class="btn-sec" id="btnRetryImages" hidden>🔄 إعادة الاستخراج</button></div>
+            <input type="file" id="imageInput" accept="image/*" multiple hidden>
+            <p class="hint">📌 تُقرأ الصور تلقائياً بالذكاء الاصطناعي عند اختيارها.</p>
+            <div id="imageThumbs" class="thumbs-grid"></div>
+            <div id="ocrProgress" class="prog-wrap" hidden><div class="prog-bar"><div class="prog-fill" id="ocrBarFill"></div></div><span id="ocrStatus" class="prog-label">جاري المعالجة...</span></div>
+            <div id="imageTextWrap" hidden><div class="extracted-hdr"><span>النص المستخرج — يمكنك التعديل</span></div><textarea id="imagesExtractedText" class="big-ta" placeholder="النص المستخرج من الصور..."></textarea></div>
+          </div>
+          <div id="panel-pdf" class="src-panel" hidden>
+            <div class="btn-row-flex"><button class="btn-sec" id="btnPickPdf">📄 اختر ملف (PDF أو Word)</button><button class="btn-sec" id="btnRetryPdf" hidden>🔄 إعادة الاستخراج</button></div>
+            <input type="file" id="pdfInput" accept="application/pdf, .docx, application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+            <span id="pdfFileName" class="file-name" hidden></span>
+            <div class="page-range" id="pdfPageRange"><label>من صفحة <input id="pdfPageFrom" type="number" min="1" value="1" class="pg-input"></label><label>إلى صفحة <input id="pdfPageTo" type="number" min="1" value="5" class="pg-input"></label></div>
+            <div id="pdfProgress" class="prog-wrap" hidden><div class="prog-bar"><div class="prog-fill" id="pdfBarFill"></div></div><span id="pdfStatus" class="prog-label">جاري الاستخراج...</span></div>
+            <div id="pdfTextWrap" hidden><textarea id="pdfExtractedText" class="big-ta" placeholder="النص المستخرج من الملف..."></textarea></div>
+          </div>
+          <div id="panel-library" class="src-panel" hidden>
+            <label class="field"><span>اختر كتاباً من مكتبتي</span><select id="libraryBookSelect" class="form-sel"><option value="">— اختر كتاباً —</option></select></label>
+            <div id="libTocWrap" class="toc-wrap" hidden><div class="toc-label">📑 فهرس الكتاب</div><div id="libTocList" class="toc-list"></div></div>
+            <p class="hint" id="libTocHint" hidden>لا يوجد فهرس مستخرج لهذا الكتاب، استخدم النطاق اليدوي أدناه.</p>
+            <div class="page-range"><label>من صفحة <input id="libPageFrom" type="number" min="1" value="1" class="pg-input"></label><label>إلى صفحة <input id="libPageTo" type="number" min="1" value="5" class="pg-input"></label></div>
+            <button class="btn-sec" id="btnExtractFromLib">📤 استخراج النص</button>
+            <div id="libProgress" class="prog-wrap" hidden><div class="prog-bar"><div class="prog-fill" id="libBarFill"></div></div><span id="libStatus" class="prog-label">جاري الاستخراج...</span></div>
+            <div id="libTextWrap" hidden><textarea id="libExtractedText" class="big-ta" placeholder="النص المستخرج من الكتاب..."></textarea></div>
+            <p class="hint">لإضافة كتاب: الشاشة الرئيسية → المكتبة → إضافة كتاب.</p>
+          </div>
+          <button type="button" class="btn-sec btn-lg btn-save-to-bank" id="btnSaveToBank" style="margin-top:12px;width:100%;">💾 حفظ الدرس</button>
+        </div>
+      </div>
+      <div class="acc-item" data-acc="generate">
+        <button type="button" class="acc-head acc-head-cta"><span class="acc-head-icon">⚡</span><span class="acc-head-text">انقر هنا لإنشاء خطة الدرس أو سبورة أو ملخص وغيرها</span><span class="acc-chevron">▾</span></button>
+        <div class="acc-panel" hidden>
+          <div class="gen-row">
+            <button class="btn-primary btn-lg" id="btnGenerate">⚡ توليد الخطة</button>
+            <button type="button" class="btn-secondary" style="background:#0ea5e9; color:white; border:none;" onclick="generateRealWorldConnection(event)">🌍 ربط الدرس بالواقع</button>
+            <button class="btn-primary" id="btnGenerateMentor" onclick="generateTeachingMentor(event)">👨‍🏫 الموجه الشخصي</button>
+            <button class="btn-board btn-lg" id="btnGenerateBoard">🖍️ السبورة</button>
+            <button class="btn-audio btn-lg" id="btnGenerateAudio">🎧 درس صوتي</button>
+            <button class="btn-quiz btn-lg" id="btnGenerateQuiz">📝 ملخص تفاعلي</button>
+            <button class="btn-mindmap btn-lg" id="btnGenerateMindmap">🧠 خريطة ذهنية</button>
+            <button type="button" class="btn-primary" id="btnGenerateAnswers">📝 حل تقويم الدرس والوحدة</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ RESULT ═══════════════ -->
+<section class="view" id="view-result" data-view="result" hidden>
+  <div class="toolbar" id="resultToolbar">
+    <button class="toolbtn" id="btnSaveArchive"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="17 21 17 13 7 13 7 21" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="7 3 7 8 15 8" fill="none" stroke="currentColor" stroke-width="2"/></svg>حفظ</button>
+    <button class="toolbtn" id="btnPrint">🖨️ طباعة</button>
+    <button class="toolbtn" id="btnExportPdf">PDF</button>
+    <button class="toolbtn" id="btnExportWord">Word</button>
+    <button class="toolbtn" id="btnExportTxt">نص</button>
+    <button class="toolbtn" id="btnExportImg">صورة</button>
+    <button class="toolbtn" id="btnGeneratePptx" hidden>📽️ عرض تقديمي</button>
+    <button class="toolbtn" id="btnShare"><svg viewBox="0 0 24 24" width="16" height="16"><circle cx="18" cy="5" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="6" cy="12" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="19" r="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8.1 10.8l7.8-4.6M8.1 13.2l7.8 4.6" stroke="currentColor" stroke-width="1.8"/></svg>مشاركة</button>
+    <button class="toolbtn" id="btnTranslate" hidden>🌐 ترجمة</button>
+    <button class="toolbtn" id="btnPhoneView">📱 هاتف</button>
+    <button class="toolbtn" id="btnEdit">✏️ تعديل</button>
+    <button class="toolbtn" id="btnDuplicate">نسخ</button>
+    <button class="toolbtn" id="btnRegenerate">🔄</button>
+    <button class="toolbtn toolbtn-danger" id="btnDeleteRecord">🗑️</button>
+  </div>
+  <div class="toolbar-sub" id="boardThemeBar" hidden>
+    <span class="board-theme-label">🎨 شكل السبورة:</span>
+    <div class="segmented" id="boardThemeSegment">
+      <button class="seg-btn active" data-theme="green">🟢 كلاسيكية</button>
+      <button class="seg-btn" data-theme="wood">🟤 خشبية</button>
+      <button class="seg-btn" data-theme="white">⚪ بيضاء</button>
+    </div>
+  </div>
+  <div id="editModeBar" class="edit-bar" hidden>
+    <span class="edit-label">📝 اضغط على أي حقل لتعديله</span>
+    <button class="toolbtn toolbtn-primary" id="btnSaveEdit">حفظ التعديلات</button>
+    <button class="toolbtn" id="btnCancelEdit">إلغاء</button>
+  </div>
+  <div id="planOutputWrap" class="plan-output"></div>
+</section>
+
+<!-- ═══════════════ ARCHIVE ═══════════════ -->
+<section class="view" id="view-archive" data-view="archive" hidden>
+  <div class="arch-kind-wrap">
+    <div class="segmented" id="archiveKindSegment">
+      <button class="seg-btn active" data-kind="plan">📋 الخطط</button>
+      <button class="seg-btn" data-kind="board">🖍️ السبورات</button>
+      <button class="seg-btn" data-kind="audio">🎧 الصوتيات</button>
+      <button class="seg-btn" data-kind="quiz">📝 الملخصات</button>
+      <button class="seg-btn" data-kind="exam">🧪 الاختبارات</button>
+      <button class="seg-btn" data-kind="mindmap">🧠 الخرائط الذهنية</button>
+      <button class="seg-btn" data-kind="answers">💡 إجابات التقويم</button>
+    </div>
+  </div>
+  <div class="arch-filter-row">
+    <select class="form-sel" id="archiveGradeFilter"><option value="">كل الصفوف</option></select>
+    <select class="form-sel" id="archiveSubjectFilter"><option value="">كل المواد</option></select>
+  </div>
+  <div class="arch-search-wrap"><input type="search" id="archiveSearch" class="search-inp" placeholder="🔍 بحث..."></div>
+  <div class="arch-select-toolbar" id="archSelectToolbar" hidden></div>
+  <div id="archiveList" class="archive-list"></div>
+  <p class="empty-state" id="archiveEmpty" hidden>لا توجد خطط محفوظة بعد.</p>
+</section>
+
+<!-- ═══════════════ LIBRARY ═══════════════ -->
+<section class="view" id="view-library" data-view="library" hidden>
+  <div class="scroll-area">
+    <div class="card">
+      <div class="card-hdr"><h3 class="card-title">مكتبة الكتب والمناهج</h3><button class="btn-primary" id="btnUploadBook">➕ إضافة كتاب</button></div>
+      <input type="file" id="bookInput" accept=".pdf, application/pdf, */*" hidden>
+      <div id="bookUploadProgress" class="prog-wrap" hidden><div class="prog-bar"><div class="prog-fill" id="bookBarFill"></div></div><span id="bookStatus" class="prog-label">جاري الرفع...</span></div>
+      <div id="libraryList"></div>
+      <p class="empty-state" id="libraryEmpty" hidden>المكتبة فارغة. أضف كتب المناهج.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ KNOWLEDGE BANK ═══════════════ -->
+<section class="view" id="view-bank" data-view="bank" hidden>
+  <div class="scroll-area">
+    <div class="card">
+      <div class="card-hdr" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="card-title" style="margin: 0;">🗄️ دروس واختبارات</h3>
+        <button class="btn-sm" id="btnClearBank" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">🗑️ مسح الكل</button>
+      </div>
+      <p class="hint">هنا تُحفظ نصوص الدروس لاستخدامها لاحقاً في بناء اختبار أو ملخص شامل.</p>
+      <div class="arch-filter-row">
+        <select class="form-sel" id="bankGradeFilter"><option value="">كل الصفوف</option></select>
+        <select class="form-sel" id="bankSubjectFilter"><option value="">كل المواد</option></select>
+      </div>
+      <div id="bankList" class="bank-list"></div>
+      <p class="empty-state" id="bankEmpty" hidden>لا توجد دروس محفوظة بعد.</p>
+      <div class="bank-actions-row">
+        <button class="btn-primary btn-lg" id="btnGenBankQuiz">📝 اختبار شامل</button>
+        <button class="btn-sec btn-lg btn-official-exam" id="btnGenOfficialExam">🧪 إنشاء اختبار رسمي</button>
+        <button class="btn-sec btn-lg" id="btnGenElectronicExam" style="background:#c2410c;color:#fff;">⚡ اختبار إلكتروني</button>
+        <button class="btn-sec btn-lg btn-exam-archive" id="btnOpenExamArchive">📂 أرشيف الاختبارات</button>
+        <button class="btn-board btn-lg" id="btnGenBankSummary">📚 ملخص شامل</button>
+        <button type="button" class="btn-primary" id="btnGenBankOralExam">🗣️ اختبار شفوي</button>
+        <button class="btn-sec btn-lg" id="btnGenBankHomework" onclick="openHomeworkModal()" style="background:#10B981;color:#fff;border-color:#059669;">🏠 إنشاء واجب منزلي</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ MODALS ═══════════════ -->
+<div class="modal-bg" id="bankLessonModal">
+  <div class="modal-card">
+    <div class="modal-hdr"><h2 id="bankModalTitle">📄 عرض الدرس</h2><button class="modal-close" id="btnCloseBankModal">✕</button></div>
+    <div class="modal-body">
+      <label class="field"><span>العنوان</span><input id="bankEditTitle" type="text" disabled></label>
+      <div class="grid-2 bank-modal-meta">
+        <label class="field"><span>المادة</span><input id="bankEditSubject" type="text" disabled></label>
+        <label class="field"><span>الصف</span><input id="bankEditGrade" type="text" disabled></label>
+      </div>
+      <label class="field"><span>نص الدرس</span><textarea id="bankEditContent" class="big-ta bank-modal-ta" rows="10" disabled></textarea></label>
+      <div class="bank-modal-actions">
+        <button class="btn-sec" id="btnBankToggleEdit">✏️ تعديل</button>
+        <button class="btn-primary" id="btnBankSaveEdit" hidden>💾 حفظ التعديل</button>
+        <button class="btn-board" id="btnBankUseAsPlan">🆕 تحضير خطة من هذا الدرس</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SETTINGS ═══════════════ -->
+<section class="view" id="view-settings" data-view="settings" hidden>
+  <div class="scroll-area">
+    <div class="card">
+      <h3 class="card-title">🔑 مفتاح Gemini API</h3>
+      <div class="key-row"><input id="sApiKey" type="password" class="key-inp" placeholder="AIza..."><button class="btn-sm" id="btnToggleKeyVisible">إظهار</button></div>
+    </div>
+    <div class="card">
+      <h3 class="card-title">الإعدادات الافتراضية</h3>
+      <div class="grid-2">
+        <label class="field"><span>المدرسة</span><input id="sSchool" type="text" placeholder="اسم المدرسة"></label>
+        <label class="field"><span>المعلم</span><input id="sTeacher" type="text" placeholder="اسم المعلم"></label>
+        <label class="field"><span>المديرية</span><input id="sDirectorate" type="text" placeholder="مديرية التربية"></label>
+        <label class="field"><span>المادة الافتراضية</span><input id="sSubject" type="text" placeholder="اللغة الإنجليزية"></label>
+        <label class="field"><span>اللغة الافتراضية</span><select id="sDefaultLang" class="form-sel"><option value="ar">العربية</option><option value="en">English</option></select></label>
+        <label class="field"><span>النموذج الافتراضي</span><select id="sDefaultModel" class="form-sel"><option value="gemini-3.5-flash">Gemini 3.5 Flash ⭐</option><option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite</option><option value="gemini-2.5-pro">Gemini 2.5 Pro</option><option value="gemini-2.5-flash">Gemini 2.5 Flash</option><option value="gemini-2.0-flash">Gemini 2.0 Flash</option></select></label>
+      </div>
+      <button class="btn-primary" id="btnSaveSettings">💾 حفظ الإعدادات</button>
+    </div>
+    <div class="card">
+      <h3 class="card-title">💾 النسخ الاحتياطي</h3>
+      <div class="backup-row"><button class="btn-sec" id="btnExportBackup">📤 تصدير نسخة احتياطية</button><button class="btn-sec" id="btnImportBackup">📥 استيراد نسخة احتياطية</button></div>
+      <input type="file" id="backupInput" accept="*/*" hidden>
+      <p class="hint">يشمل التصدير: الإعدادات وجميع الخطط المحفوظة (بدون ملفات الكتب).</p>
+    </div>
+    <div class="card card-danger">
+      <h3 class="card-title">⚠️ منطقة الخطر</h3>
+      <button class="btn-danger" id="btnClearArchive">🗑️ مسح الأرشيف كاملاً</button>
+      <button class="btn-danger" id="btnClearLibrary">🗑️ مسح المكتبة كاملاً</button>
+    </div>
+    <p class="ver-tag">الذكي — الإصدار 5.0.0 ⚡</p>
+  </div>
+</section>
+
+<!-- ═══════════════ GLOBAL SEARCH MODAL ═══════════════ -->
+<div class="modal-bg" id="globalSearchModal">
+  <div class="modal-card" style="max-width: 600px; height: 85vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #F8FAFC;">
+    <div style="background: linear-gradient(135deg, #7C3AED, #5B21B6); padding: 20px; display: flex; gap: 15px; align-items: center;">
+      <button onclick="document.getElementById('globalSearchModal').classList.remove('is-active')" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;">✕</button>
+      <input type="text" id="globalSearchInput" placeholder="ابحث عن خطة، ملخص، كتاب، أو درس..." style="flex: 1; padding: 15px; border-radius: 12px; border: none; font-size: 1.1rem; font-family: 'Cairo', sans-serif; outline: none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);">
+    </div>
+    <div id="globalSearchResults" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px;">
+      <div style="text-align: center; color: #94A3B8; font-weight: bold; margin-top: 50px; font-size: 1.2rem;">🔍 اكتب كلمة للبحث في جميع أقسام الذكي...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SELF EVALUATION MODAL ═══════════════ -->
+<div class="modal-bg" id="selfEvalModal">
+  <div class="modal-card" style="max-width: 700px; max-height: 90vh; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+    <div class="modal-hdr" style="border-bottom: 3px double #7C3AED; padding: 20px;">
+      <h2 style="color: #5B21B6; font-weight: 900; margin: 0;">📈 استمارة التقييم الذاتي (الموحدة)</h2>
+      <button class="modal-close" style="top: 15px;" onclick="document.getElementById('selfEvalModal').classList.remove('is-active')">✕</button>
+    </div>
+    <div class="modal-body" style="overflow-y: auto; flex: 1; padding: 20px; background: #F8FAFC;">
+      <div style="background: #E0F2FE; border: 2px solid #BAE6FD; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        <p style="margin: 0; color: #0369A1; font-weight: bold; font-size: 14px; line-height: 1.6;">💡 هذه الاستمارة مطابقة لاستمارة الزيارة الصفية الرسمية لوزارة التربية والتعليم.</p>
+      </div>
+      <div id="evalCardsContainer" style="display: flex; flex-direction: column; gap: 15px;"></div>
+    </div>
+    <div style="background: #ffffff; padding: 20px; border-top: 2px solid #E2E8F0; text-align: center; box-shadow: 0 -4px 10px rgba(0,0,0,0.05);">
+      <h3 style="margin: 0 0 10px; color: #1E293B; font-weight: 900;">النتيجة الإجمالية: <span id="evalScoreDisplay" style="color: #10B981; font-size: 1.8em;">0</span> <span style="font-size: 0.9em; color: #64748B;">/ 65</span></h3>
+      <p id="evalFeedbackText" style="margin: 0; font-weight: bold; color: #64748B; font-size: 15px;">اختر الدرجات أعلاه لتظهر نتيجتك ومستواك.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ HELP MODAL ═══════════════ -->
+<div class="modal-bg" id="helpModal">
+  <div class="modal-card help-card">
+    <div class="modal-hdr"><h2>📖 التعليمات</h2><button class="modal-close" id="btnCloseHelp">✕</button></div>
+    <div class="modal-body help-accordion" id="helpAccordion">
+      <div class="help-item">
+        <button class="help-head" type="button"><span class="help-num">١</span><span class="help-head-text">ما هو تطبيق "الذكي" في تحضير الدروس؟</span><span class="help-chevron">▾</span></button>
+        <div class="help-panel" hidden>
+          <p>هو تطبيق تحضير الدروس بالذكاء الاصطناعي، يقدّم للمعلم: خطط تحضير كاملة، ملخصات تفاعلية، سبورات درسية جاهزة، عروض تقديمية PowerPoint، دروسًا صوتية، واختبارات بجميع أنواعها.</p>
+          <p>🎁 هدية لكل معلم ومعلمة</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TOC RANGE MODAL ═══════════════ -->
+<div class="modal-bg" id="tocRangeModal">
+  <div class="modal-card">
+    <div class="modal-hdr"><h2>📑 استخراج فهرس الكتاب</h2><button class="modal-close" id="btnCloseTocRange">✕</button></div>
+    <div class="modal-body">
+      <p class="hint">حدد أرقام صفحات الفهرس (المحتويات) كما تظهر عند تصفح ملف الكتاب نفسه.</p>
+      <div class="page-range"><label>من صفحة <input id="tocRangeFrom" type="number" min="1" value="2" class="pg-input"></label><label>إلى صفحة <input id="tocRangeTo" type="number" min="1" value="3" class="pg-input"></label></div>
+      <div class="page-range"><label style="width:100%;">عدد الصفحات غير المرقمة (قبل بداية الترقيم بالكتاب)<input id="tocOffsetPages" type="number" min="0" value="0" class="pg-input" style="width:100%;"></label></div>
+      <button class="btn-primary btn-lg" id="btnConfirmTocRange">🔍 استخراج الفهرس</button>
+      <div id="tocRangeProgress" class="prog-wrap" hidden><div class="prog-bar"><div class="prog-fill" id="tocRangeBarFill"></div></div><span class="prog-label">جاري استخراج الفهرس...</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TOC VIEW MODAL ═══════════════ -->
+<div class="modal-bg" id="tocViewModal">
+  <div class="modal-card">
+    <div class="modal-hdr"><h2>📑 فهرس الكتاب</h2><button class="modal-close" id="btnCloseTocView">✕</button></div>
+    <div class="modal-body">
+      <p class="hint">اضغط على أي موضوع لاستخراج نصه وبدء تحضير خطة له مباشرة.</p>
+      <div id="tocViewList" class="toc-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ EXAM SETTINGS MODAL ═══════════════ -->
+<div class="modal-bg" id="examSettingsModal">
+  <div class="modal-card">
+    <div class="modal-hdr"><h2>🧪 إعدادات الاختبار الشامل</h2><button class="modal-close" id="btnCloseExamSettings">✕</button></div>
+    <div class="modal-body">
+      <p class="hint">حدّد مستوى الصعوبة وأنواع الأسئلة وعدد كل نوع، ثم اضغط توليد.</p>
+      <label class="field"><span>مستوى الصعوبة</span><select id="examDifficulty" class="form-sel"><option value="سهل">سهل</option><option value="متوسط" selected>متوسط</option><option value="صعب">صعب</option></select></label>
+      <label class="field" id="examSectionField" style="display:none;"><span>الشعبة (خاص بالاختبار الإلكتروني، اختياري)</span><input type="text" id="examSectionInput" class="form-sel" placeholder="مثال: أ"></label>
+      <div id="examTypesWrap" class="examtype-wrap">
+        <div class="examtype-row" data-type="mcq"><input type="checkbox" class="examtype-chk" data-type="mcq" checked><span class="examtype-label">اختيار من متعدد</span><input type="number" class="examtype-count" data-type="mcq" min="1" max="20" value="5"></div>
+        <div class="examtype-row" data-type="tf"><input type="checkbox" class="examtype-chk" data-type="tf" checked><span class="examtype-label">صح / خطأ</span><input type="number" class="examtype-count" data-type="tf" min="1" max="20" value="5"></div>
+        <div class="examtype-row" data-type="blank"><input type="checkbox" class="examtype-chk" data-type="blank"><span class="examtype-label">أكمل الفراغ</span><input type="number" class="examtype-count" data-type="blank" min="1" max="20" value="5"></div>
+        <div class="examtype-row" data-type="match"><input type="checkbox" class="examtype-chk" data-type="match"><span class="examtype-label">مطابقة (توصيل)</span><input type="number" class="examtype-count" data-type="match" min="2" max="12" value="4"></div>
+        <div class="examtype-row" data-type="essay"><input type="checkbox" class="examtype-chk" data-type="essay"><span class="examtype-label">مقالي قصير</span><input type="number" class="examtype-count" data-type="essay" min="1" max="10" value="3"></div>
+        <div class="examtype-row" data-type="reading"><input type="checkbox" class="examtype-chk" data-type="reading"><span class="examtype-label">قطعة فهم (Reading)</span><input type="number" class="examtype-count" data-type="reading" min="1" max="5" value="1"></div>
+      </div>
+      <button class="btn-primary btn-lg" id="btnConfirmExamGen">⚡ توليد الاختبار</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ HOMEWORK SETTINGS MODAL ═══════════════ -->
+<div class="modal-bg" id="hwSettingsModal">
+  <div class="modal-card">
+    <div class="modal-hdr"><h2>🏠 إعدادات الواجب المنزلي</h2><button class="modal-close" id="btnCloseHwSettings" onclick="document.getElementById('hwSettingsModal').classList.remove('is-active')">✕</button></div>
+    <div class="modal-body">
+      <p class="hint">سيتم توليد ملف تفاعلي ترسله للطلاب.</p>
+      <div class="grid-2">
+        <label class="field"><span>الدرجة العظمى للواجب</span><input type="number" id="hwMaxScore" class="form-sel" min="1" max="100" value="5"></label>
+        <label class="field"><span>المادة</span><select id="hwSubject" class="form-sel"><option value="قرآن كريم">قرآن كريم</option><option value="تربية إسلامية">تربية إسلامية</option><option value="لغة عربية">لغة عربية</option><option value="لغة إنجليزية" selected>لغة إنجليزية</option><option value="رياضيات">رياضيات</option><option value="فيزياء">فيزياء</option><option value="كيمياء">كيمياء</option><option value="أحياء">أحياء</option><option value="تاريخ">تاريخ</option><option value="جغرافيا">جغرافيا</option><option value="اجتماعيات">اجتماعيات</option><option value="وطنية">وطنية</option><option value="حاسوب">حاسوب</option><option value="custom">✍️ إدخال مادة يدوية...</option></select></label>
+      </div>
+      <div class="grid-2" style="margin-top: 10px;">
+        <label class="field"><span>شهر الرصد (العمود)</span><select id="hwTargetMonth" class="form-sel"><optgroup label="الأشهر الميلادية"><option value="يناير">محصلة يناير</option><option value="فبراير">محصلة فبراير</option><option value="مارس">محصلة مارس</option><option value="أبريل">محصلة أبريل</option><option value="مايو">محصلة مايو</option><option value="يونيو">محصلة يونيو</option><option value="يوليو">محصلة يوليو</option><option value="أغسطس">محصلة أغسطس</option><option value="سبتمبر" selected>محصلة سبتمبر</option><option value="أكتوبر">محصلة أكتوبر</option><option value="نوفمبر">محصلة نوفمبر</option><option value="ديسمبر">محصلة ديسمبر</option></optgroup><optgroup label="الأشهر الهجرية"><option value="محرم">محصلة محرم</option><option value="صفر">محصلة صفر</option><option value="ربيع الأول">محصلة ربيع الأول</option><option value="ربيع الآخر">محصلة ربيع الآخر</option><option value="جمادى الأولى">محصلة جمادى الأولى</option><option value="جمادى الآخرة">محصلة جمادى الآخرة</option><option value="رجب">محصلة رجب</option><option value="شعبان">محصلة شعبان</option><option value="رمضان">محصلة رمضان</option><option value="شوال">محصلة شوال</option><option value="ذو القعدة">محصلة ذو القعدة</option><option value="ذو الحجة">محصلة ذو الحجة</option></optgroup></select></label>
+        <label class="field"><span>مستوى الصعوبة</span><select id="hwDifficulty" class="form-sel"><option value="سهل">سهل</option><option value="متوسط" selected>متوسط</option><option value="صعب">صعب</option></select></label>
+      </div>
+      <div id="hwTypesWrap" class="examtype-wrap" style="margin-top: 14px;">
+        <div class="examtype-row" data-type="mcq"><input type="checkbox" class="examtype-chk" id="hwChkMcq" checked><span class="examtype-label">اختيار من متعدد</span><input type="number" class="examtype-count" id="hwCountMcq" min="1" max="20" value="5"></div>
+        <div class="examtype-row" data-type="tf"><input type="checkbox" class="examtype-chk" id="hwChkTf" checked><span class="examtype-label">صح / خطأ</span><input type="number" class="examtype-count" id="hwCountTf" min="1" max="20" value="5"></div>
+      </div>
+      <button class="btn-primary btn-lg" id="btnConfirmHwGen" onclick="generateHomeworkFile()" style="margin-top: 16px;">⚡ توليد ملف الواجب</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ BOOK READER ═══════════════ -->
+<div class="book-reader-overlay" id="bookReaderOverlay">
+  <div class="reader-topbar"><span class="reader-book-title" id="readerBookTitle">كتاب</span><button class="modal-close" id="btnCloseReader">✕</button></div>
+  <div class="reader-canvas-wrap" id="bookReaderCanvasWrap">
+    <button class="reader-nav-btn reader-nav-prev" id="btnReaderPrev" aria-label="السابق">‹</button>
+    <canvas id="bookReaderCanvas"></canvas>
+    <button class="reader-nav-btn reader-nav-next" id="btnReaderNext" aria-label="التالي">›</button>
+  </div>
+  <div class="reader-bottombar">
+    <button class="btn-sec" id="btnReaderPrev2">◀ السابق</button>
+    <span class="reader-page-label"><input type="number" id="readerPageInput" class="reader-page-input" min="1" value="1"> / <span id="readerTotalPages">1</span></span>
+    <button class="btn-sec" id="btnReaderNext2">التالي ▶</button>
+  </div>
+  <div class="reader-selection-bar" id="readerSelectionBar"></div>
+</div>
+
+<!-- ═══════════════ PPTX SETTINGS MODAL ═══════════════ -->
+<div class="modal-bg" id="pptxSettingsModal">
+  <div class="modal-card">
+    <div class="modal-hdr"><h2>📽️ توليد عرض تقديمي</h2><button class="modal-close" id="btnClosePptxSettings">✕</button></div>
+    <div class="modal-body">
+      <p class="hint">سيُعاد صياغة محتوى السبورة تلقائياً كنقاط قصيرة مناسبة للعرض على الشاشة.</p>
+      <label class="field"><span>حجم خط النقاط</span><select id="pptxFontSize" class="form-sel"><option value="36" selected>36</option></select></label>
+      <label class="field"><span>خلفية الشرائح</span><select id="pptxBackground" class="form-sel"><option value="green" selected>🟢 سبورة كلاسيكية</option></select></label>
+      <label class="field"><span>الانتقال بين الشرائح</span><select id="pptxTransition" class="form-sel"><option value="fade" selected>🌫️ تلاشي (Fade)</option></select></label>
+      <button class="btn-primary btn-lg" id="btnConfirmPptxGen">⚡ توليد العرض التقديمي</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ BANK PREP MODAL ═══════════════ -->
+<div class="modal-bg" id="bankPrepModal">
+  <div class="modal-card">
+    <div class="modal-hdr"><h2 id="bankPrepModalTitle">🚀 خيارات تحضير الدرس</h2><button class="modal-close" onclick="document.getElementById('bankPrepModal').classList.remove('is-active')">✕</button></div>
+    <div class="modal-body" style="display:flex; flex-direction:column; gap:10px;">
+      <p class="hint" style="margin-top:0; margin-bottom:5px;">اختر ماذا تريد أن تُولد من هذا الدرس:</p>
+      <button class="btn-primary" style="padding:12px; border-radius:10px; font-size:15px; font-weight:900;" onclick="triggerBankPrep('plan')">⚡ توليد خطة الدرس</button>
+      <button class="btn-primary" style="padding:12px; border-radius:10px; font-size:15px; font-weight:900; background:#0ea5e9;" onclick="triggerBankPrep('realworld')">🌍 ربط الدرس بالواقع</button>
+      <button class="btn-primary" style="padding:12px; border-radius:10px; font-size:15px; font-weight:900; background:#0f766e;" onclick="triggerBankPrep('mentor')">👨‍🏫 الموجه الشخصي</button>
+      <button class="btn-board" style="padding:12px; border-radius:10px; font-size:15px; font-weight:900;" onclick="triggerBankPrep('board')">🖍️ السبورة</button>
+      <button class="btn-audio" style="padding:12px; border-radius:10px; font-size:15px; font-weight:900;" onclick="triggerBankPrep('audio')">🎧 درس صوتي</button>
+      <button class="btn-quiz" style="padding:12px; border-radius:10px; font-size:15px; font-weight:900;" onclick="triggerBankPrep('quiz')">📝 ملخص تفاعلي</button>
+      <button class="btn-mindmap" style="padding:12px; border-radius:10px; font-size:15px; font-weight:900;" onclick="triggerBankPrep('mindmap')">🧠 خريطة ذهنية</button>
+      <button class="btn-primary" style="padding:12px; border-radius:10px; font-size:15px; font-weight:900; background:#db2777;" onclick="triggerBankPrep('answers')">📝 حل تقويم الدرس/الوحدة</button>
+      <hr style="border:0; border-top:2px dashed #e2e8f0; margin: 10px 0;">
+      <button class="btn-sec" style="padding:12px; border-radius:10px; font-size:15px; font-weight:900;" onclick="openBankLessonEditFromPrep()">✏️ عرض وتعديل نص الدرس</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ OVERLAY + TOAST ═══════════════ -->
+<div class="overlay" id="loadingOverlay">
+  <div class="overlay-card">
+    <div class="seal-spin">
+      <svg viewBox="0 0 48 48" width="48" height="48">
+        <circle cx="24" cy="24" r="22" fill="none" stroke="var(--primary)" stroke-width="2.5"/>
+        <polygon points="24,7 27.5,17.5 38.5,17.5 29.5,24 33,34.5 24,28 15,34.5 18.5,24 9.5,17.5 20.5,17.5" fill="var(--primary)"/>
+      </svg>
+    </div>
+    <p id="loadingText">جاري المعالجة...</p>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
+<script src="html2canvas.min.js"></script>
+<script src="html2pdf.bundle.min.js"></script>
+<script src="mermaid.min.js"></script>
+<script src="jszip.min.js"></script>
+<script src="pptxgen.min.js"></script>
+<script src="electroexam.js"></script>
+<script src="core.js"></script>
+<script src="evaluation.js"></script>
+<script src="onboarding.js"></script>
+<script src="library-extract.js"></script>
+<script src="semester-plan.js"></script>
+<script src="assistant.js" defer></script>
+<script src="homework.js"></script>
+
+</body>
+</html>
